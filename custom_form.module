@@ -1,0 +1,157 @@
+<?php
+/**
+ *  custom Form Mofule.
+ */
+
+/**
+ *  Implements hook_permission().
+ */
+function custom_form_permission(){
+  return array(
+    'submit custom_form' => array(
+      'title' => t('Submit form example'),
+      'description' => t('Submit the form'),
+    ),
+  );
+}
+
+/**
+ *  Implements hook_menu().
+ */
+function custom_form_menu() {
+  $items['custom_form'] = array(
+    'title' => 'Select Form',
+    'type' => MENU_NORMAL_ITEM,
+    'access arguements' => array('submit custom_form'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('custom_form_form'),
+    );
+    return $items;
+  }
+
+
+/**
+ *  Implements hook_form().
+ */   
+
+function custom_form_form($form, &$form_state) {
+  // Provide a text field.
+  $form['firstname'] = array(
+    '#title' => t('First Name'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+  );
+
+  $form['lastname'] = array(
+    '#title' => t('Last Name'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+  );
+
+  $form["state_options"]["state_select"] = array(
+    "#type" => "select", 
+    "#title" => t("Select The State You Live In."), 
+    "#default_value" => variable_get("state_select", "AZ"),
+    "#options" => array(
+      "AB" => t("Alabama"), 
+      "AL" => t("Alaska"), 
+      "AZ" => t("Arizona"), 
+      "AR" => t("Arkansas"), 
+      "CA" => t("California"), 
+      "CO" => t("Colorado"), 
+      "CN" => t("Connecticut"),
+      "DC" => t("District Of Columbia"),
+      "DL" => t("Delaware"), 
+      "FL" => t("Florida"), 
+      "GA" => t("Georgia"), 
+      "HW" => t("Hawaii"), 
+      "ID" => t("Idaho"), 
+      "IL" => t("Illinois"),
+      "IN" => t("Indiana"), 
+      "IW" => t("Iowa"),
+      "KA" => t("Kansas"),
+      "KN" => t("Kentucky"),  
+      "LA" => t("Louisiana"),
+      "MA" => t("Maine"),
+      "MD" => t("Maryland "),
+      "MC" => t("Massachusetts"),
+      "MI" => t("Michigan"),
+      "MN" => t("Minnesota"),
+      "MS" => t("Mississippi"),
+      "MZ" => t("Missouri"),
+      "MO" => t("Montana"),
+      "NB" => t("Nebraska"), 
+      "NV" => t("Nevada"), 
+      "NH" => t("New Hampshire"), 
+      "NJ" => t("New Jersey"), 
+      "NM" => t("New Mexico"), 
+      "NY" => t("New York"), 
+      "NC" => t("North Carolina"), 
+      "ND" => t("North Dakota"), 
+      "OH" => t("Ohio"), 
+      "OK" => t("Oklahoma"), 
+      "OR" => t("Oregon"), 
+      "PN" => t("Pennsylvania"), 
+      "RI" => t("Rhode Island"), 
+      "SC" => t("South Carolina"), 
+      "SD" => t("South Dakota"), 
+      "TN" => t("Tennessee"), 
+      "TX" => t("Texas"), 
+      "UT" => t("Utah"), 
+      "VM" => t("Vermont"), 
+      "VA" => t("Virginia"), 
+      "WA" => t("Washington"), 
+      "WV" => t("West Virginia"), 
+      "WI" => t("Wisconsin"), 
+      "WY" => t("Wyoming"),
+    ),
+    "#required" => TRUE,
+    "#description" => t("Select State."),
+  );
+
+  $form["gender_options"]["gender_select"] = array(
+    "#type" => "select", 
+    "#title" => t("Select Your Gender"), 
+    "#default_value" => variable_get("gender_select", "M"),
+    "#options" => array(
+      "M" => t("Male"), 
+      "F" => t("Female"),
+    ),
+    "#required" => TRUE,
+    "#description" => t("Gender"),
+  );   
+
+  
+  // Provide a submit button.
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+  
+  return $form;
+}
+
+
+/**
+ *  Implements hook_submit().
+ */
+function custom_form_form_submit($form, &$form_state) {
+  $firstname = db_insert('custom_form_table')
+    -> fields(array(
+      'firstname' => $form_state['values']['firstname'],
+      'lastname' => $form_state['values']['lastname'],
+      'state' => $form_state['values']['state_select'],
+      'sex' => $form_state['values']['gender_select'],
+    ))
+    -> execute();
+  $name = $form_state['values']['firstname'];
+  drupal_set_message(t('Thanks for filling out the form, %name',
+    array('%name' => $name)));
+}
+
+
+
+
+
+
+

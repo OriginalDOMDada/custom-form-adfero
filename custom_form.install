@@ -1,0 +1,36 @@
+<?php
+
+function custom_form_schema() {
+  $schema['custom_form_table'] = array(
+    'description' => 'The table for Form Maker.',
+    'fields' => array(
+      'firstname' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'lastname' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'state' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'sex' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+
+      'indexes' => array(
+        'custom_form_firstname' => array('firstname'),
+        'custom_form_lastname' => array('lastname'),
+        'custom_form_state' => array('state'),
+        'custom_form_sex' => array('sex'),
+      ),
+    ),
+    'primary key' => array('firstname'),
+  );
+
+  return $schema;
+} 
+
